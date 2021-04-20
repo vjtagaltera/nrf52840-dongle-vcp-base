@@ -99,8 +99,8 @@ NRF_CLI_DEF(m_cli_uart,
 
 #define RX_PIN_NUMBER (15)
 #define TX_PIN_NUMBER (17)
-#define RTS_PIN_NUMBER (20)
-#define CTS_PIN_NUMBER (22)
+/*#define RTS_PIN_NUMBER (20)*/
+/*#define CTS_PIN_NUMBER (22)*/
 
 /**
  * @brief Enable power USB detection
