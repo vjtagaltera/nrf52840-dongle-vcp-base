@@ -32,3 +32,11 @@ create the project
   change: usbd_cdc_acm_pca10056 to vcp_base_pca10059 at three places
           BOARD_PCA10056 to BOARD_PCA10056 at one place
 
+define uart rx tx pins
+
+    +#define RX_PIN_NUMBER (15)
+    +#define TX_PIN_NUMBER (17)
+    +#define RTS_PIN_NUMBER (20)
+    +#define CTS_PIN_NUMBER (22)
+
+
