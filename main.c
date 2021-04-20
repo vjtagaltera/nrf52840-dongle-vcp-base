@@ -102,6 +102,31 @@ NRF_CLI_DEF(m_cli_uart,
 /*#define RTS_PIN_NUMBER (20)*/
 /*#define CTS_PIN_NUMBER (22)*/
 
+#define CUSTOM_TIMER_FEATURE_ENABLE (1) /* from github jimmywong2003/nrf52840-dongle-example */
+#define CUSTOM_TIMER_FEATURE (defined(CUSTOM_TIMER_FEATURE_ENABLE) && (CUSTOM_TIMER_FEATURE_ENABLE))
+
+#if CUSTOM_TIMER_FEATURE
+/* Counter timer. */
+APP_TIMER_DEF(m_custom_timer_0);
+
+bool m_custom_counter_active = 1;
+uint32_t m_custom_ms_counter = 0;
+
+static void custom_timer_handler(void * p_context)
+{
+        UNUSED_PARAMETER(p_context);
+
+        if (m_custom_counter_active)
+        {
+                m_custom_ms_counter ++;
+                if ( m_custom_ms_counter == 0 ) m_custom_ms_counter = 1;
+                if ( (m_custom_ms_counter % 1000) == 1 ) {
+                        ;/*NRF_LOG_RAW_INFO("custom_ms_counter = %u\n", m_custom_ms_counter);*/
+                }
+        }
+}
+#endif /* CUSTOM_TIMER_FEATURE */
+
 /**
  * @brief Enable power USB detection
  *
@@ -223,6 +248,9 @@ static void usbd_user_ev_handler(app_usbd_event_type_t event)
             break;
         case APP_USBD_EVT_POWER_READY:
             NRF_LOG_INFO("USB ready");
+#if CUSTOM_TIMER_FEATURE
+            NRF_LOG_INFO("USB ready at ms %u", m_custom_ms_counter);
+#endif
             app_usbd_start();
             break;
         default:
@@ -314,6 +342,16 @@ int main(void)
 
     ret = app_timer_init();
     APP_ERROR_CHECK(ret);
+
+#if CUSTOM_TIMER_FEATURE
+        m_custom_counter_active = 1;
+
+        ret = app_timer_create(&m_custom_timer_0, APP_TIMER_MODE_REPEATED, custom_timer_handler);
+        APP_ERROR_CHECK(ret);
+
+        ret = app_timer_start(m_custom_timer_0, APP_TIMER_TICKS(1), NULL);
+        APP_ERROR_CHECK(ret);
+#endif
 
     init_bsp();
 #if NRF_CLI_ENABLED
