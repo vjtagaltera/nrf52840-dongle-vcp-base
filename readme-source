@@ -29,4 +29,6 @@ create the project
     $ git mv usbd_cdc_acm_pca10056.emProject vcp_base_pca10059.emProject
     $ git mv usbd_cdc_acm_pca10056.emSession vcp_base_pca10059.emSession
 
+  change: usbd_cdc_acm_pca10056 to vcp_base_pca10059 at three places
+          BOARD_PCA10056 to BOARD_PCA10056 at one place
 
