@@ -24,3 +24,9 @@ create the project
     -rwxrwxr-x+ 1     361 Mar 20 18:19 usbd_cdc_acm_pca10056.emSession
     $ cp -a ../../../../../ble_peripheral/ble_app_blinky/pca10059/s140/ses/flash_placement.xml .
 
+  modify the project board files
+
+    $ git mv usbd_cdc_acm_pca10056.emProject vcp_base_pca10059.emProject
+    $ git mv usbd_cdc_acm_pca10056.emSession vcp_base_pca10059.emSession
+
+
