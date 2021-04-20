@@ -102,6 +102,7 @@ NRF_CLI_DEF(m_cli_uart,
 /*#define RTS_PIN_NUMBER (20)*/
 /*#define CTS_PIN_NUMBER (22)*/
 
+/* -------------------------------------------------------------------- */
 #define CUSTOM_TIMER_FEATURE_ENABLE (1) /* from github jimmywong2003/nrf52840-dongle-example */
 #define CUSTOM_TIMER_FEATURE (defined(CUSTOM_TIMER_FEATURE_ENABLE) && (CUSTOM_TIMER_FEATURE_ENABLE))
 
@@ -126,6 +127,29 @@ static void custom_timer_handler(void * p_context)
         }
 }
 #endif /* CUSTOM_TIMER_FEATURE */
+/* -------------------------------------------------------------------- */
+#define CUSTOM_SER_FEATURE_ENABLE (1) /* from github jimmywong2003/nrf52840-dongle-example */
+#define CUSTOM_SER_FEATURE (defined(CUSTOM_SER_FEATURE_ENABLE) && (CUSTOM_SER_FEATURE_ENABLE))
+
+#if CUSTOM_SER_FEATURE
+
+/* copied from app_usbd_serial_num.c */
+#define SERIAL_NUMBER_STRING_SIZE (12)
+extern uint8_t g_extern_serial_number[SERIAL_NUMBER_STRING_SIZE + 1];
+
+static char m_custom_ser_value[SERIAL_NUMBER_STRING_SIZE + 1] = "C01234778899";
+
+static void custom_ser_modify()
+{
+        const uint16_t high_bytes = (uint16_t)NRF_FICR->DEVICEADDR[1];
+        const uint32_t low_bytes  = NRF_FICR->DEVICEADDR[0];
+        NRF_LOG_INFO("MAC: %04x%08x", high_bytes, low_bytes);
+
+        for (uint32_t i=0; i<SERIAL_NUMBER_STRING_SIZE; i++)
+                g_extern_serial_number[i] = m_custom_ser_value[i];
+}
+#endif
+/* -------------------------------------------------------------------- */
 
 /**
  * @brief Enable power USB detection
@@ -359,6 +383,9 @@ int main(void)
 #endif
 
     app_usbd_serial_num_generate();
+#if CUSTOM_SER_FEATURE
+        custom_ser_modify();
+#endif
 
     ret = app_usbd_init(&usbd_config);
     APP_ERROR_CHECK(ret);
